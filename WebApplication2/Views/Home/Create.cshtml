@@ -1,19 +1,200 @@
 ﻿@using WebApplication2.ViewModels;
 @model CreateQuestionnaireViewModel
-<script src="~/js/app.js"></script>
+
+@{
+    ViewData["Title"] = "Create";
+}
+
 <div class="row">
     <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">Questionnaire</h4>
-                <form method="post" asp-action="Create" enctype="multipart/form-data">
-                    @{
-                        await Html.RenderPartialAsync("_CreateQuestionnaire", Model);
-                    }
-                    <button type="submit" class="submit-button">Save</button>
-                </form>
-            </div>
+        <div id="addproduct-accordion" class="custom-accordion">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="name" class="control-label"></label>
+                    <input asp-for="name" class="form-control" />
+                </div>
+                <div id="AddT">
+                    <div class="card">
+                        <a href="#1" class="text-dark" data-bs-toggle="collapse" aria-expanded="true" aria-controls="1">
+                            <div class="p-4">
+                                <div class="media align-items-center">
+                                    <div class="me-3">
+                                        <div class="avatar-xs">
+                                            <div class="avatar-title rounded-circle bg-soft-primary text-primary">
+                                                01
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="media-body overflow-hidden">
+                                        <h5 class="font-size-16 mb-1">Billing Info</h5>
+                                        <p class="text-muted text-truncate mb-0">Fill all information below</p>
+                                    </div>
+                                    <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div id="1" class="collapse show" data-bs-parent="#1">
+                            @if (Model == null || Model.questionViewModels == null || Model.questionViewModels.Count == 0)
+                            {
+                                <div class="p-4 border-top">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="question">Text</label>
+                                        <input class="form-control" id="question" name="questionViewModels[0].question" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" class="control-label">gradingType</label>
+                                                <select class="form-control select2" id="gradingType" name="questionViewModels[0].gradingType">
+                                                    <option>Select</option>
+                                                    <option value="1">Electronic</option>
+                                                    <option value="2">Fashion</option>
+                                                    <option value="3">Fitness</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="comentary">Commentary</label>
+                                                <input class="form-control" id="comentary" name="questionViewModels[0].comentary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else if (Model.questionViewModels != null && Model.questionViewModels.Count > 0)
+                            {
+                                @for (var i = 0; i < Model.questionViewModels.Count; i++)
+                                {
+                                    <div class="p-4 border-top">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="questionViewModels[@i].question">Text</label>
+                                            <input class="form-control" asp-for="questionViewModels[@i].question" />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label" class="control-label">gradingType</label>
+                                                    <select class="form-control select2" asp-for="questionViewModels[@i].gradingType">
+                                                        <option>Select</option>
+                                                        <option value="1">Electronic</option>
+                                                        <option value="2">Fashion</option>
+                                                        <option value="3">Fitness</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="questionViewModels[@i].comentary">Commentary</label>
+                                                    <input class="form-control" asp-for="questionViewModels[@i].comentary" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <input type="button" id="btnAddNew" value="Add New" class="btn btn-primary" />
+                            <input type="button" id="btnAjaxSubmit" value="Submit Via Ajax" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+<script>
+    $(function () {
+        var cardCount = 1;
+
+        $("#btnAddNew").click(function () {
+            cardCount++;
+
+            var newCard = `
+                        <div class="card">
+                            <a href="#${cardCount}" class="text-dark" data-bs-toggle="collapse" aria-expanded="true" aria-controls="${cardCount}">
+                                <div class="p-4">
+                                    <div class="media align-items-center">
+                                        <div class="me-3">
+                                            <div class="avatar-xs">
+                                                <div class="avatar-title rounded-circle bg-soft-primary text-primary">
+                                                    ${cardCount}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="media-body overflow-hidden">
+                                            <h5 class="font-size-16 mb-1">Billing Info</h5>
+                                            <p class="text-muted text-truncate mb-0">Fill all information below</p>
+                                        </div>
+                                        <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <div id="${cardCount}" class="collapse show" data-bs-parent="#${cardCount}">
+                                <div class="p-4 border-top">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="question">Text</label>
+                                        <input class="form-control" id="question" name="questionViewModels[${cardCount}].question" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" class="control-label">gradingType</label>
+                                                <select class="form-control select2" id="gradingType" name="questionViewModels[${cardCount}].gradingType">
+                                                    <option>Select</option>
+                                                    <option value="1">Electronic</option>
+                                                    <option value="2">Fashion</option>
+                                                    <option value="3">Fitness</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="comentary">Commentary</label>
+                                                <input class="form-control" id="comentary" name="questionViewModels[${cardCount}].comentary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+            $("#AddT").append(newCard);
+        });
+
+        // Use Ajax to submit the data
+        $("#btnAjaxSubmit").click(function () {
+            var vm = {};
+            vm.name = $("#name").val();
+            var questionViewModels = [];
+
+            $(".p-4.border-top").each(function (index, item) {
+                var newQuestion = {
+                    question: $(item).find("input[id='question']").val(),
+                    gradingType: $(item).find("select[id='gradingType']").val(),
+                    comentary: $(item).find("input[id='comentary']").val()
+                };
+                questionViewModels.push(newQuestion);
+            });
+
+            vm.questionViewModels = questionViewModels;
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/Create", // Замените на соответствующий URL
+                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify(vm),
+                success: function (data) {
+                    alert(data);
+                }
+            });
+        });
+    });
+</script>

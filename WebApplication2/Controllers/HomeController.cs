@@ -133,7 +133,7 @@ namespace WebApplication2.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create(CreateQuestionnaireViewModel VM)
+        public async Task<IActionResult> Create([FromBody] CreateQuestionnaireViewModel VM)
         {
             return View();
 
@@ -144,14 +144,6 @@ namespace WebApplication2.Controllers
         {
             //var tmp = new CreateQuestionViewModel();
             return PartialView("~/Views/Home/_AddQuestion.cshtml");//, tmp);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddQuestion(CreateQuestionViewModel questionViewModel, CreateQuestionnaireViewModel questionnaireViewModel)
-        {
-            questionnaireViewModel.questionViewModels.Add(questionViewModel);
-
-            return PartialView("~/Views/Home/_CreateQuestionnaire.cshtml", questionnaireViewModel);
         }
 
     }
